@@ -1,14 +1,17 @@
 import socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = '127.0.0.1'   
-port = 12345
-server_socket.bind((host, port))
-server_socket.listen(1)
-print(f"Server listening on {host}:{port}")
-conn, addr = server_socket.accept()
-print(f"Connected by {addr}")
-data = conn.recv(1024).decode()
-print(f"Client says: {data}")
-conn.send("Hello from Server!".encode())
-conn.close()
-server_socket.close()
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server started... Waiting for client...")
+c, addr = s.accept()
+print(f"Connected with {addr}")
+while True:
+    i = input("Enter data: ")         
+    c.send(i.encode())             
+    ack = c.recv(1024).decode()       
+    if ack:
+        print("Client says:", ack)
+        continue
+    else:
+        c.close()
+        break      
